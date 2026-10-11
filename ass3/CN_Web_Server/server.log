@@ -1,0 +1,6 @@
+::1 - - [17/Aug/2026 10:42:49] "HEAD /index.html HTTP/1.1" 200 -
+::1 - - [17/Aug/2026 10:43:48] "GET /index.html HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [17/Aug/2026 10:43:55] "GET /index.html HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [17/Aug/2026 10:43:55] "GET /notes.txt HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [17/Aug/2026 10:43:55] "GET /sample.pdf HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [17/Aug/2026 10:43:55] "GET /image.jpg HTTP/1.1" 200 -

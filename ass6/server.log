@@ -1,0 +1,13 @@
+[Server] Listening on port 8080...
+
+[Server] Received: HELLOŠ (6 bytes)
+[CHECKSUM] Received: 0x8A, Calculated: 0x8A
+[Result] ERROR-FREE
+
+[Server] Received: TESTñ (5 bytes)
+[CRC] Received: 0xF1, Calculated: 0xF1
+[Result] ERROR-FREE
+
+[Server] Received: UESTñ (5 bytes)
+[CRC] Received: 0xF1, Calculated: 0xF6
+[Result] ERROR DETECTED

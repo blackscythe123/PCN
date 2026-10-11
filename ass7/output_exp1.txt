@@ -1,0 +1,12 @@
+===== Flow 1 (n0 -> n2) =====
+Total bytes received : 998912 bytes
+Throughput           : 0.998912 Mbps
+Avg packet latency    : 5.7344 ms
+
+===== Flow 2 (n3 -> n0) =====
+Total bytes received : 436736 bytes
+Throughput           : 0.499127 Mbps
+Avg packet latency    : 8.6016 ms
+
+===== Comparison =====
+Flow 1 offers higher throughput than Flow 2 because its source rate (1 Mbps) is higher than Flow 2's (500 Kbps); both stay well within the 5 Mbps link capacity so latency for both is dominated by the fixed 2 ms-per-hop propagation delay rather than queuing.

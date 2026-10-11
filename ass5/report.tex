@@ -1,0 +1,194 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{parskip}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue}
+
+\definecolor{codebg}{RGB}{245,245,245}
+\lstdefinestyle{cstyle}{
+  language=C,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{teal},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  breaklines=true,
+  frame=single,
+  tabsize=2,
+  showstringspaces=false
+}
+\lstdefinestyle{outstyle}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  showstringspaces=false
+}
+
+\title{\vspace{-2cm}}
+\date{}
+
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+{\large \textbf{Sri Sivasubramaniya Nadar College of Engineering}}\\
+{\small (An Autonomous Institution, Affiliated to Anna University, Chennai)}\\
+{\small Kalavakkam -- 603 110}\\[0.3cm]
+{\small Department of Computer Science \& Engineering}\\[1.5cm]
+
+\rule{\linewidth}{0.5mm}\\[0.4cm]
+{\LARGE \textbf{Computer Networks Laboratory}}\\[0.3cm]
+{\Large 1513 -- Computer Networks Lab}\\[0.4cm]
+\rule{\linewidth}{0.5mm}\\[1.5cm]
+
+{\huge \textbf{Assignment 5}}\\[0.4cm]
+{\Large Simulation of Domain Name Resolution using UDP Socket Programming}\\[2cm]
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Name:} & Vijayaraaghavan K S \\[0.2cm]
+\textbf{Register Number:} & 3122247001066 \\[0.2cm]
+\textbf{Year / Semester:} & III Year / V Semester \\[0.2cm]
+\textbf{Course:} & 1513 Computer Networks Lab \\[0.2cm]
+\textbf{Date of Submission:} & 05 August 2026 \\[0.2cm]
+\end{tabular}
+\end{center}
+
+\vfill
+\end{titlepage}
+
+\section*{1. Objective}
+To develop a client/server application using UDP sockets that simulates a DNS server and DNS
+client. The client queries the server for domain name resolution and the server responds with
+the corresponding IP address. The system also simulates client-side caching of recent lookups
+and handles three categories of errors -- non-existent domains (NXDOMAIN), invalid query
+format, and request timeouts -- in order to analyse the suitability of UDP (overhead, latency,
+reliability) for a DNS-like service.
+
+\section*{2. Server Algorithm}
+\begin{enumerate}
+  \item Maintain a fixed \texttt{DNSRecord} table (an array of \texttt{domain}$\to$\texttt{ip}
+        pairs) acting as the DNS database.
+  \item Create a UDP socket, bind it to port 8080.
+  \item Loop forever: block on \texttt{recvfrom()} to receive a domain-name query and the
+        client's address.
+  \item If the query is the special domain \texttt{timeout.com}, deliberately \texttt{sleep(5)}
+        and send no reply, to simulate a request that never arrives (timeout demonstration).
+  \item Else if the query does not contain a \texttt{'.'} character, it is treated as an
+        \emph{invalid format} and the reply \texttt{"ERROR: Invalid Format"} is sent.
+  \item Otherwise, linearly search the DNS table for the domain:
+  \begin{itemize}
+    \item If found, reply with the corresponding IP address.
+    \item If not found, reply \texttt{"NXDOMAIN"}.
+  \end{itemize}
+  \item Send the reply back to the querying client using \texttt{sendto()} and loop.
+\end{enumerate}
+
+\section*{3. Client Algorithm}
+\begin{enumerate}
+  \item Maintain a local \texttt{Cache} array (domain $\to$ IP) that starts empty.
+  \item Create a UDP socket (no \texttt{connect()} -- connectionless).
+  \item Repeatedly prompt the user for a domain name (or \texttt{exit} to quit).
+  \item First check the local cache (\texttt{searchCache()}):
+  \begin{itemize}
+    \item \textbf{Cache hit} -- print the cached IP immediately, without contacting the server.
+    \item \textbf{Cache miss} -- \texttt{sendto()} the domain to the server.
+  \end{itemize}
+  \item On a cache miss, wait for a reply using \texttt{select()} with a 3-second timeout:
+  \begin{itemize}
+    \item If \texttt{select()} times out, print \texttt{"Request Timed Out!"}.
+    \item Otherwise \texttt{recvfrom()} the reply and interpret it: \texttt{NXDOMAIN} $\Rightarrow$
+          domain not found; \texttt{ERROR: Invalid Format} $\Rightarrow$ bad query; else the reply
+          is a valid IP, which is displayed and inserted into the client cache.
+  \end{itemize}
+  \item Display the current cache contents after every query and repeat until the user types
+        \texttt{exit}.
+\end{enumerate}
+
+\section*{4. Server Code}
+\subsection*{4.1 server.c}
+\lstinputlisting[style=cstyle]{server.c}
+
+\section*{5. Client Code}
+\subsection*{5.1 client.c}
+\lstinputlisting[style=cstyle]{client.c}
+
+\section*{6. Output / Test Cases}
+The server was started in the background and the client was driven through a single session
+that exercises every required scenario: a fresh lookup (cache miss), a repeated lookup of the
+same domain (cache hit), a domain absent from the DNS table (NXDOMAIN), a malformed query
+(invalid format, no dot), and a query for \texttt{timeout.com} (timeout simulation).
+
+\subsection*{6.1 Server Log}
+\begin{lstlisting}[style=outstyle]
+====================================
+     UDP DNS Server Started
+     Listening on Port 8080
+====================================
+
+Received Query : google.com
+Domain Found
+Reply Sent : 142.250.183.14
+
+Received Query : notarealdomain.xyz
+Domain Not Found
+Reply Sent : NXDOMAIN
+
+Received Query : invalidformat
+Reply Sent : ERROR: Invalid Format
+
+Received Query : timeout.com
+Simulating Timeout...
+\end{lstlisting}
+
+\subsection*{6.2 Client Console Output (all test cases)}
+\lstinputlisting[style=outstyle]{output.txt}
+
+Note that the second query for \texttt{google.com} produced a \emph{Cache Hit} on the client
+and therefore never reached the server -- this is why the server log shows only one
+\texttt{google.com} entry despite two client-side lookups.
+
+\section*{7. Analysis: Suitability of UDP for DNS}
+\begin{itemize}
+  \item \textbf{Communication overhead:} UDP's 8-byte header and connectionless design avoid the
+        three-way handshake and connection-teardown cost of TCP, which matters because a DNS
+        query/response is typically a single small round trip -- exactly the workload UDP is
+        optimised for.
+  \item \textbf{Latency:} Since no connection setup is required, a UDP query reaches the server
+        and returns a reply in one round trip, minimising latency for the common case, as observed
+        in the near-instantaneous replies for \texttt{google.com} and \texttt{notarealdomain.xyz}.
+  \item \textbf{Reliability:} UDP does not guarantee delivery, so the application must implement
+        its own timeout and retry logic -- demonstrated here using \texttt{select()} with a
+        3-second timeout when the server intentionally withholds a reply for \texttt{timeout.com}.
+        In production DNS, if a UDP response does not arrive (or exceeds 512 bytes historically),
+        resolvers retry, and can fall back to TCP for larger responses.
+  \item \textbf{Caching:} Client-side caching, as implemented here, further reduces the
+        reliance on network round trips (and therefore on UDP's lack of guarantees) for repeated
+        queries, which mirrors how real resolvers use TTL-based caching to cut both latency and
+        server load.
+\end{itemize}
+
+\section*{8. Learning Outcomes}
+\begin{itemize}
+  \item Understood why real-world DNS predominantly uses UDP: low overhead and low latency for
+        small, idempotent query/response exchanges outweigh the lack of built-in reliability.
+  \item Learned to implement application-level timeout handling over UDP using \texttt{select()},
+        since the transport itself provides no delivery guarantee.
+  \item Implemented and observed the effect of client-side caching in reducing redundant network
+        queries.
+  \item Practised handling multiple categories of error conditions (NXDOMAIN, invalid format,
+        timeout) end-to-end across a client-server boundary.
+  \item Reinforced the connectionless \texttt{sendto()}/\texttt{recvfrom()} programming model and
+        contrasted it with the connection-oriented TCP model used in earlier assignments.
+\end{itemize}
+
+\end{document}

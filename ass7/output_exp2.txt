@@ -1,0 +1,24 @@
+===== Experiment 2 -- Single Flow (Port 5000 only), sweeping link latency =====
+delay=2ms Flow1(port5000) received=1221 throughput=1.00024Mbps
+delay=5ms Flow1(port5000) received=1220 throughput=0.999424Mbps
+delay=10ms Flow1(port5000) received=1219 throughput=0.998605Mbps
+delay=20ms Flow1(port5000) received=1216 throughput=0.996147Mbps
+
+===== Experiment 2 -- Two Flows (Port 5000 + Port 6000), sweeping link latency =====
+delay=2ms Flow1(port5000) received=1221 throughput=1.00024Mbps Flow2(port6000) received=1221 throughput=1.00024Mbps
+delay=5ms Flow1(port5000) received=1220 throughput=0.999424Mbps Flow2(port6000) received=1220 throughput=0.999424Mbps
+delay=10ms Flow1(port5000) received=1219 throughput=0.998605Mbps Flow2(port6000) received=1219 throughput=0.998605Mbps
+delay=20ms Flow1(port5000) received=1216 throughput=0.996147Mbps Flow2(port6000) received=1216 throughput=0.996147Mbps
+
+===== PCAP Verification (delay=2ms, both flows), filtered by destination port =====
+-- Port 5000 (Flow 1 / Server 1), first 3 packets --
+00:00:01.000000 IP 10.1.1.1.49153 > 10.1.1.2.5000: UDP, length 512
+00:00:01.004096 IP 10.1.1.1.49153 > 10.1.1.2.5000: UDP, length 512
+00:00:01.008192 IP 10.1.1.1.49153 > 10.1.1.2.5000: UDP, length 512
+-- Port 6000 (Flow 2 / Server 2), first 3 packets --
+00:00:01.000433 IP 10.1.1.1.49154 > 10.1.1.2.6000: UDP, length 512
+00:00:01.004529 IP 10.1.1.1.49154 > 10.1.1.2.6000: UDP, length 512
+00:00:01.008625 IP 10.1.1.1.49154 > 10.1.1.2.6000: UDP, length 512
+-- Packet counts per port in the capture --
+Port 5000 packets: 1221
+Port 6000 packets: 1221

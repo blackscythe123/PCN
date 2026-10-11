@@ -1,0 +1,30 @@
+=========== DNS Client ===========
+
+Enter Domain (or exit): Cache Miss! Querying Server...
+IP Address : 142.250.183.14
+
+----- Client Cache -----
+google.com --> 142.250.183.14
+------------------------
+
+Enter Domain (or exit): Cache Hit!
+IP Address : 142.250.183.14
+
+Enter Domain (or exit): Cache Miss! Querying Server...
+Domain Not Found.
+
+----- Client Cache -----
+google.com --> 142.250.183.14
+------------------------
+
+Enter Domain (or exit): Cache Miss! Querying Server...
+Invalid Domain Format.
+
+----- Client Cache -----
+google.com --> 142.250.183.14
+------------------------
+
+Enter Domain (or exit): Cache Miss! Querying Server...
+Request Timed Out!
+
+Enter Domain (or exit): 

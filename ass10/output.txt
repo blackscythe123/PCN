@@ -1,0 +1,30 @@
+===== RIP / normal =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2085 | PDR=94.9021% | AvgDelay=25.344ms
+
+===== RIP / congestion =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=1969 | PDR=89.6222% | AvgDelay=375.903ms
+Flow 10.0.1.1 -> port 6001 | Tx=2197 Rx=1969 | PDR=89.6222% | AvgDelay=377.992ms
+
+===== RIP / failure =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=866 | PDR=39.4174% | AvgDelay=25.344ms
+
+===== OSPF / normal =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2194 | PDR=99.8635% | AvgDelay=25.344ms
+
+===== OSPF / congestion =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2071 | PDR=94.2649% | AvgDelay=381.493ms
+Flow 10.0.1.1 -> port 6001 | Tx=2197 Rx=2073 | PDR=94.3559% | AvgDelay=383.452ms
+
+===== OSPF / failure =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2182 | PDR=99.3173% | AvgDelay=25.344ms
+
+===== AODV / normal =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2158 | PDR=98.2249% | AvgDelay=26.5169ms
+
+===== AODV / congestion =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=1289 | PDR=58.6709% | AvgDelay=741.357ms
+Flow 10.0.1.1 -> port 6001 | Tx=2197 Rx=1289 | PDR=58.6709% | AvgDelay=741.64ms
+
+===== AODV / failure =====
+Flow 10.0.0.1 -> port 6000 | Tx=2197 Rx=2158 | PDR=98.2249% | AvgDelay=26.5175ms
+

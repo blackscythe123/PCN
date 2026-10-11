@@ -1,0 +1,16 @@
+Error Detection Methods:
+1. Checksum
+2. CRC
+Choose (1/2): 
+=== CHECKSUM MODE ===
+Enter data: [Intermediate Sum Calculation]
+  Step 1: 0x48 + Sum = 0x0048
+  Step 2: 0x45 + Sum = 0x008D
+  Step 3: 0x4C + Sum = 0x00D9
+  Step 4: 0x4C + Sum = 0x0125
+  Step 5: 0x4F + Sum = 0x0174
+  Total Sum: 0x0174
+  Carry (End-around): 0x01
+  After adding carry: 0x0075
+  1's Complement (Checksum): 0x8A
+[Sent] Data with Checksum (0x8A)

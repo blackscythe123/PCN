@@ -1,0 +1,18 @@
+====================================
+     UDP DNS Server Started
+     Listening on Port 8080
+====================================
+
+Received Query : google.com
+Domain Found
+Reply Sent : 142.250.183.14
+
+Received Query : notarealdomain.xyz
+Domain Not Found
+Reply Sent : NXDOMAIN
+
+Received Query : invalidformat
+Reply Sent : ERROR: Invalid Format
+
+Received Query : timeout.com
+Simulating Timeout...

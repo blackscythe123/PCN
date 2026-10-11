@@ -30,18 +30,37 @@ unsigned char checksum_calc(char *data, int len) {
     return checksum;
 }
 
+void print_binary(unsigned char val) {
+    for (int b = 7; b >= 0; b--) putchar((val >> b) & 1 ? '1' : '0');
+}
+
 unsigned char crc_calc(char *data, int len) {
     unsigned char crc = 0;
-    printf("[CRC Calculation with G(x)=10011]\n");
+    printf("[CRC Calculation with G(x) = x^4+x+1 = 10011]\n");
+
+    printf("  Binary equivalent of \"%s\":\n    ", data);
     for (int i = 0; i < len; i++) {
-        crc ^= data[i];
+        print_binary((unsigned char)data[i]);
+        putchar(' ');
+    }
+    printf("\n");
+
+    for (int i = 0; i < len; i++) {
+        crc ^= (unsigned char)data[i];
         for (int j = 0; j < 8; j++) {
             if (crc & 0x80) crc = (crc << 1) ^ GENERATOR;
             else crc <<= 1;
             crc &= 0xFF;
         }
+        printf("  Step %d: XOR-divide byte '%c' (0x%02X) into register -> 0x%02X (",
+               i + 1, data[i], (unsigned char)data[i], crc);
+        print_binary(crc);
+        printf(")\n");
     }
-    printf("  Final CRC: 0x%02X\n", crc);
+
+    printf("  Final CRC (remainder): 0x%02X = ", crc);
+    print_binary(crc);
+    printf("\n");
     return crc;
 }
 

@@ -41,8 +41,11 @@ void *client_handler(void *arg) {
     int bytes_read = recv(sock, buffer, sizeof(buffer) - 1, 0);
 
     if (bytes_read > 0) {
-        buffer[bytes_read] = '\0';
-        printf("\n[Server] Received: %s (%d bytes)\n", buffer, bytes_read);
+        unsigned char trailer = buffer[bytes_read - 1];
+        buffer[bytes_read - 1] = '\0';
+        printf("\n[Server] Received: \"%s\" + trailer byte 0x%02X (%d bytes total)\n",
+               buffer, trailer, bytes_read);
+        buffer[bytes_read - 1] = (char)trailer;
 
         if (type == 'C') {
             unsigned char recv_checksum = buffer[bytes_read - 1];
