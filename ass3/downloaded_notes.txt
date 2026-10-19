@@ -1,4 +1,0 @@
-Computer Networks Laboratory Assignment 3:
-HTTP Client using TCP Sockets.
-This is a plain text file served by the Python HTTP server.
-Downloaded successfully!
