@@ -79,15 +79,16 @@ int main(int argc, char *argv[]) {
     srcApp.Start(Seconds(1.0));
     srcApp.Stop(Seconds(10.0));
 
-    // 2. UDP Application (OnOff CBR from node 1 to node 5)
+    // 2. UDP Application (UdpServer on node 5, UdpClient on node 1)
     uint16_t udpPort = 9090;
-    PacketSinkHelper udpSink("ns3::UdpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), udpPort));
-    udpSink.Install(c.Get(5)).Start(Seconds(0.5));
+    UdpServerHelper udpServer(udpPort);
+    udpServer.Install(c.Get(5)).Start(Seconds(0.5));
 
-    OnOffHelper udpSource("ns3::UdpSocketFactory", InetSocketAddress(if35.GetAddress(1), udpPort));
-    udpSource.SetAttribute("DataRate", StringValue("800Kbps"));
-    udpSource.SetAttribute("PacketSize", UintegerValue(512));
-    ApplicationContainer udpApp = udpSource.Install(c.Get(1));
+    UdpClientHelper udpClient(if35.GetAddress(1), udpPort);
+    udpClient.SetAttribute("MaxPackets", UintegerValue(1000));
+    udpClient.SetAttribute("Interval", TimeValue(MilliSeconds(10)));
+    udpClient.SetAttribute("PacketSize", UintegerValue(512));
+    ApplicationContainer udpApp = udpClient.Install(c.Get(1));
     udpApp.Start(Seconds(2.0));
     udpApp.Stop(Seconds(10.0));
 

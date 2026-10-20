@@ -84,18 +84,19 @@ int main(int argc, char *argv[]) {
     Ipv4InterfaceContainer staInterfaces = address.Assign(staDevices);
     Ipv4InterfaceContainer apInterface = address.Assign(apDevices);
 
-    // Traffic: UDP PacketSink on AP
+    // Traffic: UDP Server on AP
     uint16_t port = 9;
-    PacketSinkHelper sink("ns3::UdpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port));
-    ApplicationContainer sinkApp = sink.Install(wifiApNode.Get(0));
+    UdpServerHelper server(port);
+    ApplicationContainer sinkApp = server.Install(wifiApNode.Get(0));
     sinkApp.Start(Seconds(0.0));
     sinkApp.Stop(Seconds(10.0));
 
-    // Traffic: STA nodes send UDP traffic to AP
-    OnOffHelper onoff("ns3::UdpSocketFactory", InetSocketAddress(apInterface.GetAddress(0), port));
-    onoff.SetAttribute("DataRate", StringValue("1Mbps"));
-    onoff.SetAttribute("PacketSize", UintegerValue(1024));
-    ApplicationContainer clientApps = onoff.Install(wifiStaNodes);
+    // Traffic: STA nodes send UDP to AP
+    UdpClientHelper client(apInterface.GetAddress(0), port);
+    client.SetAttribute("MaxPackets", UintegerValue(1000));
+    client.SetAttribute("Interval", TimeValue(MilliSeconds(10)));
+    client.SetAttribute("PacketSize", UintegerValue(1024));
+    ApplicationContainer clientApps = client.Install(wifiStaNodes);
     clientApps.Start(Seconds(1.0));
     clientApps.Stop(Seconds(10.0));
 
